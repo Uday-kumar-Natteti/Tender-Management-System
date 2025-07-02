@@ -12,18 +12,19 @@ connectDB();
 // Allowed origins for CORS
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://tender-management-system-git-main-udays-projects-b69dec4c.vercel.app/',
-  'https://tender-management-system-six.vercel.app/'
+  'https://tender-management-system-six.vercel.app',
+  'https://tender-management-system-udays-projects-b69dec4c.vercel.app/'
 ];
 
-// CORS Middleware
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
+    console.log('🛰️ Incoming Origin:', origin); // log the real origin
+
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      return callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.error('❌ Not allowed by CORS:', origin);
+      return callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true
