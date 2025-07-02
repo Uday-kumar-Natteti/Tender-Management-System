@@ -9,11 +9,25 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-// Middleware
+// Allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://tender-management-system-six.vercel.app'
+];
+
+// CORS Middleware
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json());
 
 // Health check
@@ -27,7 +41,7 @@ app.use('/api/companies', require('./routes/company'));
 app.use('/api/tenders', require('./routes/tender'));
 app.use('/api/applications', require('./routes/application'));
 
-// Optional: Global error handler (template)
+// Optional: Global error handler
 // app.use((err, req, res, next) => {
 //   console.error(err.stack);
 //   res.status(500).json({ error: 'Something went wrong!' });
