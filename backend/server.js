@@ -15,7 +15,7 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    const allowedOrigins = [
+    const baseAllowedOrigins = [
       'http://localhost:3000',
       'http://localhost:3001',
       'https://localhost:3000',
@@ -24,15 +24,24 @@ const corsOptions = {
       'https://tender-management-system-udays-projects-b69dec4c.vercel.app',
       process.env.CLIENT_ORIGIN,
       process.env.FRONTEND_URL,
-      // Add your actual frontend domain here
-      // 'https://your-frontend-domain.onrender.com'
     ].filter(Boolean); // Remove undefined values
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Normalize origins by removing trailing slashes and creating both versions
+    const allowedOrigins = [];
+    baseAllowedOrigins.forEach(url => {
+      const normalizedUrl = url.replace(/\/$/, ''); // Remove trailing slash
+      allowedOrigins.push(normalizedUrl); // Without slash
+      allowedOrigins.push(normalizedUrl + '/'); // With slash
+    });
+    
+    // Remove duplicates
+    const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
+    
+    if (uniqueAllowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
-      console.log('Allowed origins:', allowedOrigins);
+      console.log('Allowed origins:', uniqueAllowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
