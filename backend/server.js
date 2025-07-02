@@ -12,7 +12,7 @@ connectDB();
 // Allowed origins for CORS
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://tender-management-system-six.vercel.app'
+  'https://tender-management-system-git-main-udays-projects-b69dec4c.vercel.app/'
 ];
 
 // CORS Middleware
