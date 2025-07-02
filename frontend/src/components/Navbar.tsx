@@ -1,16 +1,30 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check auth on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const closeMenu = () => setIsMobileMenuOpen(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    router.push('/login');
+  };
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -38,8 +52,17 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
-          <Link href="/login" className="btn btn-secondary">Login</Link>
-          <Link href="/register" className="btn btn-primary">Register</Link>
+
+          {isAuthenticated ? (
+            <button onClick={handleLogout} className="btn btn-danger">
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link href="/login" className="btn btn-secondary">Login</Link>
+              <Link href="/register" className="btn btn-primary">Register</Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu toggle */}
@@ -65,8 +88,22 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
-          <Link href="/login" onClick={closeMenu} className="btn btn-secondary w-full text-center">Login</Link>
-          <Link href="/register" onClick={closeMenu} className="btn btn-primary w-full text-center">Register</Link>
+          {isAuthenticated ? (
+            <button
+              onClick={() => {
+                handleLogout();
+                closeMenu();
+              }}
+              className="btn btn-danger w-full text-center"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link href="/login" onClick={closeMenu} className="btn btn-secondary w-full text-center">Login</Link>
+              <Link href="/register" onClick={closeMenu} className="btn btn-primary w-full text-center">Register</Link>
+            </>
+          )}
         </div>
       )}
     </header>
