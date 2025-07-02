@@ -20,6 +20,8 @@ const corsOptions = {
       'http://localhost:3001',
       'https://localhost:3000',
       'https://localhost:3001',
+      'https://tender-management-system-six.vercel.app',
+      'https://tender-management-system-udays-projects-b69dec4c.vercel.app',
       process.env.CLIENT_ORIGIN,
       process.env.FRONTEND_URL,
       // Add your actual frontend domain here
